@@ -3,9 +3,13 @@
 use Illuminate\Support\Facades\Route;
 
 
+
+
+
+
 /*
 |--------------------------------------------------------------------------
-| Web Routes
+| Admin Routes
 |--------------------------------------------------------------------------
 |
 | Here is where you can register web routes for your application. These
@@ -14,20 +18,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/scan' , function(){
+    return view('scan');
+})->name('scan');
 
-Route::middleware([
-    'auth:sanctum',
-    config('jetstream.auth_session'),
-    'verified',
-    
-])->group(function () {
-    Route::get('/dashboard', function () {
-        return view('dashboard');
-    })->name('dashboard');
-});
+Route::resource('users', UserController::class);
 
-
-
+Route::resource('expos', ExpoController::class);

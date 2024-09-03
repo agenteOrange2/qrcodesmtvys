@@ -12,16 +12,16 @@
 
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')">
+                    <x-nav-link href="{{ route('dashboard') }}" :active="request()->routeIs('admin.dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
-                    <x-nav-link href="{{ route('scan') }}" :active="request()->routeIs('scan')">
+                    <x-nav-link href="{{ route('admin.scan') }}" :active="request()->routeIs('admin.scan')">
                         {{ __('Scan') }}
                     </x-nav-link>
-                    <x-nav-link href="{{ route('expos.index') }}" :active="request()->routeIs('expos.index')">
+                    <x-nav-link href="{{ route('admin.expos.index') }}" :active="request()->routeIs('admin.expos.index')">
                         {{ __('Exposiciones') }}
                     </x-nav-link>
-                    <x-nav-link href="{{ route('users.index') }}" :active="request()->routeIs('users.index')">
+                    <x-nav-link href="{{ route('admin.users.index') }}" :active="request()->routeIs('admin.users.index')">
                         {{ __('Usuarios') }}
                     </x-nav-link>                    
                 </div>

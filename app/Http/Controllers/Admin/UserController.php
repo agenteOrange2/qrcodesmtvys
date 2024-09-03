@@ -35,7 +35,7 @@ class UserController extends Controller
 
         User::create($validatedData);
 
-        return redirect()->route('users.index')->with('success', 'Usuario creado exitosamente.');
+        return redirect()->route('admin.users.index')->with('success', 'Usuario creado exitosamente.');
     }
 
     // Mostrar el formulario de edición
@@ -66,10 +66,9 @@ class UserController extends Controller
         return redirect()->route('admin.users.index')->with('success', 'Usuario actualizado exitosamente.');
     }
 
-    // Eliminar un usuario de la base de datos
     public function destroy(User $user)
     {
         $user->delete();
-        return redirect()->route('admin.users.index')->with('success', 'Usuario eliminado exitosamente.');
+        return redirect()->route('users.index')->with('success', 'Usuario eliminado exitosamente.');
     }
 }
