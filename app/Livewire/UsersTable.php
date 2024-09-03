@@ -14,7 +14,7 @@ class UsersTable extends DataTableComponent
     {
         $this->setPrimaryKey('id')
         ->setTableRowUrl(function ($row) {
-            return route('users.edit', ['user' => $row->id]);
+            return route('admin.users.edit', ['user' => $row->id]);
         })
         ->setTableRowUrlTarget(function ($row) {
             return '_blank';

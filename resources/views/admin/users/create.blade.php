@@ -2,45 +2,30 @@
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 px-8 py-6 bg-white ">
 
-            <form action="{{'admin.users.store'}}" method="POST" enctype="multipart/form-data">
-                 @csrf
+            <form action="{{ route('admin.users.store') }}" method="POST" enctype="multipart/form-data">
+                @csrf
 
                 <div class="grid gap-6 my-4 md:grid-cols-2">
-                    <div class="profile_avatar flex justify-center">
-                        <img class="rounded-full w-[50%]" src="{{ asset('img/Elliot.jpg') }}" alt="Extra small avatar">
+                    <div class="profile_avatar flex justify-center relative">
+                        <img class="rounded-full w-[50%]" src="{{ asset('img/profile_user.webp') }}" id="imgPreview"
+                            alt="Extra small avatar">
 
                         <div class="input_file_box">
-                            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                                <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
-                                <g id="SVGRepo_iconCarrier">
-                                    <path
-                                        d="M3 9C3 7.89543 3.89543 7 5 7H6.5C7.12951 7 7.72229 6.70361 8.1 6.2L9.15 4.8C9.52771 4.29639 10.1205 4 10.75 4H13.25C13.8795 4 14.4723 4.29639 14.85 4.8L15.9 6.2C16.2777 6.70361 16.8705 7 17.5 7H19C20.1046 7 21 7.89543 21 9V18C21 19.1046 20.1046 20 19 20H5C3.89543 20 3 19.1046 3 18V9Z"
-                                        stroke="#000000" stroke-width="2" stroke-linecap="round"
-                                        stroke-linejoin="round"></path>
-                                    <circle cx="12" cy="13" r="4" stroke="#000000" stroke-width="2"
-                                        stroke-linecap="round" stroke-linejoin="round"></circle>
-                                </g>
-                            </svg>
+                            <div class="absolute top-8 right-8">
+                                <label class="bg-white px-4 py-2 rounded-lg cursor-pointer">
+                                    <i class="fa-solid fa-camera mr-2"></i>
+                                    Actualizar imagen
+                                    <input type="file" accept="image/*" name="image" class="hidden"
+                                        onchange="previewImage(event, '#imgPreview')">
+                                </label>
+                            </div>
                         </div>
                     </div>
-                    <div class="bg-white p-6 rounded-lg mb-6 w-full max-w-lg">
+                    {{-- <div class="p-6 rounded-lg mb-6 w-full max-w-lg">
                         <div class="mb-4">
-                            <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-600"
-                                for="file_input">Upload file</label>
-                            <input
-                                class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
-                                aria-describedby="file_input_help" id="file_input" type="file">
-                            <p class="mt-1 text-sm text-gray-500 dark:text-gray-300" id="file_input_help">SVG, PNG, JPG
-                                or GIF (MAX. 800x400px).</p>
-
-                        </div>
-
-                        <div class="mb-4">
-
-                            <h3 class="mb-4 font-semibold text-gray-900 dark:text-white">Technology</h3>
+                            <h3 class="mb-4 font-semibold text-gray-900 dark:text-gray-600">Roles</h3>
                             <ul
-                                class="w-48 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                                class="w-48 text-sm font-medium text-gray-900  border border-gray-200 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white">
                                 <li class="w-full border-b border-gray-200 rounded-t-lg dark:border-gray-600">
                                     <div class="flex items-center ps-3">
                                         <input id="vue-checkbox" type="checkbox" value=""
@@ -52,60 +37,74 @@
                                 </li>
                             </ul>
                         </div>
-                    </div>
+                    </div> --}}
 
                 </div>
                 <div class="grid gap-6 mb-6 md:grid-cols-2">
                     <div>
                         <label for="first_name"
                             class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-600">Nombre</label>
-                        <input type="text" id="name"
+                        <input type="text" name="name"
                             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                            placeholder="John" required />
+                            value="{{ old('name') }}"
+                            placeholder="John"  />
                     </div>
                     <div>
                         <label for="last_name"
                             class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-600">Apellidos</label>
-                        <input type="text" id="last_name"
+                        <input type="text" name="last_name"
                             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                            placeholder="Doe" required />
+                            value="{{ old('last_name') }}"
+                            placeholder="Doe"  />
                     </div>
                     <div>
                         <label for="company"
                             class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-600">Empresa</label>
-                        <input type="text" id="company"
+                        <input type="text" name="company"
                             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                            placeholder="Flowbite" required />
+                            value="{{ old('company') }}"
+                            placeholder="Flowbite"  />
                     </div>
                     <div>
                         <label for="phone"
                             class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-600">Teléfono</label>
-                        <input type="tel" id="phone"
+                        <input type="tel" name="phone"
                             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                            placeholder="123-45-678" pattern="[0-9]{3}-[0-9]{2}-[0-9]{3}" required />
+                            value="{{ old('phone') }}"
+                            placeholder="123-45-678" />
                     </div>
                 </div>
                 <div class="mb-6">
-                    <label for="email"
-                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-600">Email </label>
-                    <input type="email" id="email"
+                    <label for="first_name"
+                    class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-600">Sitio Web</label>
+                <input type="text" name="website"
+                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                    value="{{ old('website') }}"
+                    placeholder="URl Sitio web"  />
+                </div>
+                <div class="mb-6">
+                    <label for="email" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-600">Email
+                    </label>
+                    <input type="email" name="email"
                         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                        placeholder="john.doe@company.com" required />
+                        value="{{ old('email') }}"
+                        placeholder="john.doe@company.com" />
                 </div>
                 <div class="mb-6">
                     <label for="password"
                         class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-600">Contraseña</label>
-                    <input type="password" id="password"
+                    <input type="password" name="password"
                         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                        placeholder="•••••••••" required />
+                        
+                        placeholder="•••••••••" />
                 </div>
                 <div class="mb-6">
                     <label for="confirm_password"
                         class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-600">Confirmar
                         Contraseña</label>
-                    <input type="password" id="confirm_password"
+                    <input type="password" name="password_confirmation"
                         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                        placeholder="•••••••••" required />
+                        placeholder="•••••••••"  />
                 </div>
 
                 <div class="mb-4 flex justify-end">
@@ -121,7 +120,7 @@
                     <button
                         class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
                         type="submit">
-                        + Add new user
+                        + Crear Usuario
                     </button>
                     <button
                         class="ml-2 bg-gray-300 hover:bg-gray-400 text-gray-700 font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
@@ -130,7 +129,23 @@
                     </button>
                 </div>
             </form>
-
         </div>
     </div>
+
+
+    @push('js')
+        <script>
+            /*Imagen Preview*/
+            function previewImage(event, querySelector) {
+                const input = event.target;
+                const imgPreview = document.querySelector(querySelector);
+
+                if (!input.files.length) return;
+
+                const file = input.files[0];
+                const objectURL = URL.createObjectURL(file);
+                imgPreview.src = objectURL;
+            }
+        </script>
+    @endpush
 </x-app-layout>

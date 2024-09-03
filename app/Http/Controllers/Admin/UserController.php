@@ -1,9 +1,12 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
 {
@@ -23,19 +26,35 @@ class UserController extends Controller
     // Guardar un nuevo usuario en la base de datos
     public function store(Request $request)
     {
+        // dd($request->all());
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
+            'last_name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
+            'image' => 'nullable|image',
             'password' => 'required|string|min:8|confirmed',
+            'website' => 'nullable|string|max:255',
             'position' => 'nullable|string|max:255',
             'company' => 'nullable|string|max:255',
         ]);
 
         $validatedData['password'] = bcrypt($validatedData['password']);
 
+        if ($request->hasFile('image')) {
+            $imagePath = $request->file('image')->store('profile-photos', 'public');
+            $data['profile_photo_path'] = $imagePath;
+        }
+
         User::create($validatedData);
 
-        return redirect()->route('admin.users.index')->with('success', 'Usuario creado exitosamente.');
+        // Flash message
+        session()->flash('swal', [
+            'icon' => 'success',
+            'title' => '¡Usuario Creado!',
+            'text' => 'Se ha creado el usuario con éxito.',
+        ]);
+
+        return redirect()->route('admin.users.index');
     }
 
     // Mostrar el formulario de edición
@@ -47,23 +66,40 @@ class UserController extends Controller
     // Actualizar un usuario en la base de datos
     public function update(Request $request, User $user)
     {
-        $validatedData = $request->validate([
+        // dd($request->all());
+        $request->validate([            
             'name' => 'required|string|max:255',
+            'last_name' => 'required|string|max:255',            
             'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
-            'password' => 'nullable|string|min:8|confirmed',
+            'password' => 'required|string|min:8|confirmed',
+            'image' => 'nullable|image',
+            'website' => 'nullable|string|max:255',
             'position' => 'nullable|string|max:255',
             'company' => 'nullable|string|max:255',
         ]);
 
         if ($request->filled('password')) {
-            $validatedData['password'] = bcrypt($validatedData['password']);
-        } else {
-            unset($validatedData['password']);
+            $user->password = Hash::make($request->password);
         }
 
-        $user->update($validatedData);
+        if ($request->hasFile('image')) {
+            if ($user->profile_photo_path && Storage::disk('public')->exists($user->profile_photo_path)) {
+                Storage::disk('public')->delete($user->profile_photo_path);
+            }
+            $imagePath = $request->file('image')->store('profile-photos', 'public');
+            $user->profile_photo_path = $imagePath;
+        }
 
-        return redirect()->route('admin.users.index')->with('success', 'Usuario actualizado exitosamente.');
+        $user->save();
+
+        // Flash message
+        session()->flash('swal', [
+            'icon' => 'success',
+            'title' => '¡Usuario Actualizado!',
+            'text' => 'Se ha creado el usuario con éxito.',
+        ]);
+
+        return redirect()->route('admin.users.index');
     }
 
     public function destroy(User $user)
