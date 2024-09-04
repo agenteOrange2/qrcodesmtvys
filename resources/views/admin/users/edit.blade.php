@@ -127,7 +127,7 @@
         </div>
     </div>
 
-
+<h2>hola</h2>
     @push('js')
         <script>
             /*Imagen Preview*/
