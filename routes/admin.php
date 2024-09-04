@@ -2,8 +2,9 @@
 
 use Illuminate\Support\Facades\Route;
 
-use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\ExpoController;
+use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\QrScanController;
 
 
 
@@ -18,10 +19,15 @@ use App\Http\Controllers\Admin\ExpoController;
 |
 */
 
-Route::get('/scan' , function(){
-    return view('scan');
+Route::get('scan' , function(){
+    return view('admin.scanner.scan');
 })->name('scan');
 
 Route::resource('users', UserController::class);
 
+// Registrar 'usuarios-capturados' como resource completo
+Route::resource('usuarios-capturados', QrScanController::class);
+
+
 Route::resource('expos', ExpoController::class);
+

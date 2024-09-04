@@ -5,3 +5,19 @@
 [x-cloak] {
     display: none;
 }
+
+#reader{
+    max-width: 1200px!important;
+}
+
+#reader #reader__scan_region{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+@media(width <= 768px){
+    #reader{
+        max-width: 100%!important;
+    }
+}

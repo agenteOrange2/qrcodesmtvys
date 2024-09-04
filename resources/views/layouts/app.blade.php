@@ -15,9 +15,6 @@
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
-    <!-- Incluir el script de html5-qrcode -->
-    <script src="html5-qrcode.min.js"></script>
-
     <!-- Sweet Alert 2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 

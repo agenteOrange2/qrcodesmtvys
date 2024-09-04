@@ -15,8 +15,11 @@
                     <x-nav-link href="{{ route('dashboard') }}" :active="request()->routeIs('admin.dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
-                    <x-nav-link href="{{ route('admin.scan') }}" :active="request()->routeIs('admin.scan')">
+                    <x-nav-link href="{{ route('admin.scan') }}" :active="request()->routeIs('admin.scanner.scan')">
                         {{ __('Scan') }}
+                    </x-nav-link>
+                    <x-nav-link href="{{ route('admin.usuarios-capturados.index') }}" :active="request()->routeIs('admin.usuarios-capturados.index')">
+                        {{ __('Usuarios Capturados') }}
                     </x-nav-link>
                     <x-nav-link href="{{ route('admin.expos.index') }}" :active="request()->routeIs('admin.expos.index')">
                         {{ __('Exposiciones') }}
@@ -131,6 +134,7 @@
                         </x-slot>
                     </x-dropdown>
                 </div>
+                
             </div>
 
             <!-- Hamburger -->

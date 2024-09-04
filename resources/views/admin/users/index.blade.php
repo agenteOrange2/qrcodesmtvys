@@ -8,7 +8,7 @@
                     Crear Nuevo Usuario
                 </a>
             </div>
-            <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg p-8">                                
+            <div class="overflow-hidden shadow-xl sm:rounded-lg p-8">                                
                 <livewire:users-table />
             </div>
         </div>

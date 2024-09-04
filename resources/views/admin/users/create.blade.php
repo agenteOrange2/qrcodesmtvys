@@ -58,6 +58,14 @@
                             placeholder="Doe"  />
                     </div>
                     <div>
+                        <label for="position"
+                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-600">Posición</label>
+                    <input type="text" name="position"
+                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        value="{{ old('position') }}"
+                        placeholder="Ingeniero, Vendedor, Contratista"  />
+                    </div>
+                    <div>
                         <label for="company"
                             class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-600">Empresa</label>
                         <input type="text" name="company"
@@ -73,22 +81,22 @@
                             value="{{ old('phone') }}"
                             placeholder="123-45-678" />
                     </div>
+                    <div>
+                        <label for="email" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-600">Email
+                        </label>
+                        <input type="email" name="email"
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                            value="{{ old('email') }}"
+                            placeholder="john.doe@company.com" />
+                    </div>
                 </div>
                 <div class="mb-6">
-                    <label for="first_name"
+                    <label for="website"
                     class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-600">Sitio Web</label>
                 <input type="text" name="website"
                     class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                     value="{{ old('website') }}"
                     placeholder="URl Sitio web"  />
-                </div>
-                <div class="mb-6">
-                    <label for="email" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-600">Email
-                    </label>
-                    <input type="email" name="email"
-                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                        value="{{ old('email') }}"
-                        placeholder="john.doe@company.com" />
                 </div>
                 <div class="mb-6">
                     <label for="password"
