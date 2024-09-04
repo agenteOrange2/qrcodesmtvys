@@ -45,6 +45,20 @@
         </main>
     </div>
 
+
+    <!-- Botón flotante con contador de escaneos -->
+    <div id="scan-counter" class="fixed bottom-4 right-4">
+        <button class="bg-blue-500 text-white px-4 py-2 rounded-full shadow-lg flex items-center">
+            <span class="mr-2">
+                <!-- Icono de escaneo (puedes usar Font Awesome o un SVG) -->
+                <i class="fas fa-qrcode"></i>
+            </span>
+            <a href="{{ route('admin.usuarios-capturados.index') }}">
+                <span>Escaneos: <span id="scan-count">{{ $scanCount }}</span></span>
+            </a>
+        </button>
+    </div>
+
     @stack('modals')
 
     @livewireScripts
@@ -54,7 +68,10 @@
             Swal.fire(@json(session('swal')))
         </script>
     @endif
+
     <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+    
+
 
 </body>
 
