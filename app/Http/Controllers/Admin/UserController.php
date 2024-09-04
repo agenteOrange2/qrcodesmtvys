@@ -26,7 +26,6 @@ class UserController extends Controller
     // Guardar un nuevo usuario en la base de datos
     public function store(Request $request)
     {
-        // dd($request->all());
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
@@ -40,12 +39,17 @@ class UserController extends Controller
 
         $validatedData['password'] = bcrypt($validatedData['password']);
 
-        if ($request->hasFile('image')) {
-            $imagePath = $request->file('image')->store('profile-photos', 'public');
-            $data['profile_photo_path'] = $imagePath;
-        }
+        $user = User::create($validatedData);
 
-        User::create($validatedData);
+        if ($request->hasFile('image')) {
+            $imagePath = $request->file('image')->storeAs(
+                'fotos_perfil/' . $user->id,
+                'profile_photo.' . $request->file('image')->getClientOriginalExtension(),
+                'public'
+            );
+            $user->profile_photo_path = $imagePath;
+            $user->save();
+        }
 
         // Flash message
         session()->flash('swal', [
@@ -66,12 +70,10 @@ class UserController extends Controller
     // Actualizar un usuario en la base de datos
     public function update(Request $request, User $user)
     {
-        // dd($request->all());
-        $request->validate([            
+        $validatedData = $request->validate([
             'name' => 'required|string|max:255',
-            'last_name' => 'required|string|max:255',            
-            'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
-            'password' => 'required|string|min:8|confirmed',
+            'last_name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,            
             'image' => 'nullable|image',
             'website' => 'nullable|string|max:255',
             'position' => 'nullable|string|max:255',
@@ -79,24 +81,30 @@ class UserController extends Controller
         ]);
 
         if ($request->filled('password')) {
-            $user->password = Hash::make($request->password);
+            $user->password = bcrypt($request->password);
         }
 
         if ($request->hasFile('image')) {
+            // Eliminar la imagen anterior si existe
             if ($user->profile_photo_path && Storage::disk('public')->exists($user->profile_photo_path)) {
                 Storage::disk('public')->delete($user->profile_photo_path);
             }
-            $imagePath = $request->file('image')->store('profile-photos', 'public');
+
+            $imagePath = $request->file('image')->storeAs(
+                'fotos_perfil/' . $user->id,
+                'profile_photo.' . $request->file('image')->getClientOriginalExtension(),
+                'public'
+            );
             $user->profile_photo_path = $imagePath;
         }
 
-        $user->save();
+        $user->update($validatedData);
 
         // Flash message
         session()->flash('swal', [
             'icon' => 'success',
             'title' => '¡Usuario Actualizado!',
-            'text' => 'Se ha creado el usuario con éxito.',
+            'text' => 'Se ha actualizado el usuario con éxito.',
         ]);
 
         return redirect()->route('admin.users.index');
@@ -104,7 +112,20 @@ class UserController extends Controller
 
     public function destroy(User $user)
     {
+        // Eliminar la carpeta de fotos de perfil si existe
+        if (Storage::disk('public')->exists('fotos_perfil/' . $user->id)) {
+            Storage::disk('public')->deleteDirectory('fotos_perfil/' . $user->id);
+        }
+
         $user->delete();
-        return redirect()->route('users.index')->with('success', 'Usuario eliminado exitosamente.');
+
+        // Flash message
+        session()->flash('swal', [
+            'icon' => 'success',
+            'title' => '¡Usuario Eliminado!',
+            'text' => 'Se ha eliminado el usuario con éxito.',
+        ]);
+
+        return redirect()->route('admin.users.index');        
     }
 }

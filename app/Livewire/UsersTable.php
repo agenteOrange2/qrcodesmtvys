@@ -38,6 +38,9 @@ class UsersTable extends DataTableComponent
             Column::make("Nombre", "name")
                 ->sortable()
                 ->searchable(fn($query, $searchTerm) => $query->orWhere('users.name', 'like', '%' . $searchTerm . '%')),            
+            Column::make("Apellido", "last_name")
+                ->sortable()
+                ->searchable(fn($query, $searchTerm) => $query->orWhere('users.last_name', 'like', '%' . $searchTerm . '%')),            
             Column::make("Email", "email")
                 ->sortable()
                 ->collapseOnTablet()
