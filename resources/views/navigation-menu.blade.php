@@ -20,10 +20,7 @@
                     </x-nav-link>
                     <x-nav-link href="{{ route('admin.usuarios-capturados.index') }}" :active="request()->routeIs('admin.usuarios-capturados.index')">
                         {{ __('Usuarios Capturados') }}
-                    </x-nav-link>
-                    <x-nav-link href="{{ route('admin.expos.index') }}" :active="request()->routeIs('admin.expos.index')">
-                        {{ __('Exposiciones') }}
-                    </x-nav-link>
+                    </x-nav-link>                
                     <x-nav-link href="{{ route('admin.users.index') }}" :active="request()->routeIs('admin.users.index')">
                         {{ __('Usuarios') }}
                     </x-nav-link>                    
