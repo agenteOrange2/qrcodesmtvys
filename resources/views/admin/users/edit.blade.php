@@ -5,6 +5,8 @@
             <form action="{{ route('admin.users.update', $user) }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
+
+                <x-validation-errors class="my-4" />
                 <div class="grid gap-6 my-4 md:grid-cols-2">
                     <div class="profile_avatar flex justify-center relative">
                         <img class="rounded-full w-[50%]" src="{{ $user->profile_photo_url }}" id="imgPreview"

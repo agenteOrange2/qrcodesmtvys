@@ -23,31 +23,48 @@ use App\Http\Controllers\Admin\PermissionController;
 */
 
 Route::middleware(['auth'])->group(function () {
-Route::get('scan' , function(){ return view('admin.scanner.scan'); })->name('scan');
 
 
-/* ****************************** */
-/* **** CRUD ROLES ***** */
-/* ****************************** */
-Route::resource('roles', RoleController::class);
+    /* ****************************** */
+    /* **** CRUD DASHBOARD ***** */
+    /* ****************************** */
+    Route::get('/dashboard', function () {
+        return view('admin.dashboard'); 
+    })->middleware('can:dashboard')->name('dashboard');
 
-Route::resource('permissions', PermissionController::class);
-
-
-/* ****************************** */
-/* **** CRUD USERS ***** */
-/* ****************************** */
-
-Route::resource('users', UserController::class);
-
-
-/* ****************************** */
-/* **** CRUD USUARIOS ESCANEADOS ***** */
-/* ****************************** */
-// Registrar 'usuarios-capturados' como resource completo
-Route::resource('usuarios-capturados', QrScanController::class);
+    /* ****************************** */
+    /* **** CRUD SCAN ***** */
+    /* ****************************** */
+    Route::get('scan', function () {
+        return view('admin.scanner.scan');
+    })->middleware('can:scan')->name('scan');
 
 
-Route::resource('expos', ExpoController::class);
+    /* ****************************** */
+    /* **** CRUD ROLES ***** */
+    /* ****************************** */
+    Route::resource('roles', RoleController::class)->middleware('can:roles');
+
+    /* ****************************** */
+    /* **** CRUD PERMISSIONS ***** */
+    /* ****************************** */
+    Route::resource('permissions', PermissionController::class)->middleware('can:permissions');
+
+
+    /* ****************************** */
+    /* **** CRUD USERS ***** */
+    /* ****************************** */
+
+    Route::resource('users', UserController::class)->middleware('can:users');
+
+
+    /* ****************************** */
+    /* **** CRUD USUARIOS ESCANEADOS ***** */
+    /* ****************************** */
+    // Registrar 'usuarios-capturados' como resource completo
+    Route::get('usuarios-capturados/export', [QrScanController::class, 'export'])->name('usuarios-capturados.export');
+    Route::resource('usuarios-capturados', QrScanController::class)->middleware('can:captura');
+
+    //Route::resource('expos', ExpoController::class);
 
 });

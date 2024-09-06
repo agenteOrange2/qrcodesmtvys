@@ -34,8 +34,8 @@ class UserController extends Controller
             'last_name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'image' => 'nullable|image',
-            'roles' => 'required|array', // Validar roles como array
-            'roles.*' => 'exists:roles,id', // Asegurarse que los roles existen en la tabla de roles
+            'roles' => 'nullable|array',
+            'roles.*' => 'exists:roles,id',
             'password' => 'required|string|min:8|confirmed',
             'website' => 'nullable|string|max:255',
             'position' => 'nullable|string|max:255',
@@ -53,9 +53,11 @@ class UserController extends Controller
             'company' => $validatedData['company'] ?? null,
         ]);
 
-        // Obtener los nombres de los roles desde los IDs y asignarlos
-        $roles = Role::whereIn('id', $request->input('roles'))->pluck('name')->toArray();
-        $user->syncRoles($roles); // Sincronizar roles usando nombres
+        // Verificar si hay roles seleccionados y sincronizarlos (store)
+        if ($request->has('roles')) {
+            $roles = Role::whereIn('id', $request->input('roles'))->pluck('name')->toArray(); // Obtener los nombres de los roles
+            $user->syncRoles($roles); // Sincronizar roles usando nombres
+        }
 
         // Guardar la imagen de perfil si está presente
         if ($request->hasFile('image')) {
@@ -86,8 +88,8 @@ class UserController extends Controller
             'last_name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
             'image' => 'nullable|image',
-            'roles' => 'required|array', // Validar roles como array
-            'roles.*' => 'exists:roles,id', // Asegurarse que los roles existen en la tabla de roles
+            'roles' => 'nullable|array',
+            'roles.*' => 'exists:roles,id',
             'password' => 'nullable|string|min:8|confirmed',
             'website' => 'nullable|string|max:255',
             'position' => 'nullable|string|max:255',
@@ -109,8 +111,8 @@ class UserController extends Controller
             $user->update(['password' => bcrypt($request->password)]);
         }
 
-        // Obtener los nombres de los roles desde los IDs y sincronizarlos
-        $roles = Role::whereIn('id', $request->input('roles'))->pluck('name')->toArray();
+        // Sincronizar roles, incluso si están deseleccionados (update)
+        $roles = Role::whereIn('id', $request->input('roles', []))->pluck('name')->toArray(); // Obtener los nombres de los roles
         $user->syncRoles($roles); // Sincronizar roles usando nombres
 
         // Actualizar la imagen de perfil si está presente
@@ -129,6 +131,7 @@ class UserController extends Controller
 
         return redirect()->route('admin.users.index')->with('success', 'Usuario actualizado correctamente');
     }
+
 
     // Eliminar un usuario
     public function destroy(User $user)

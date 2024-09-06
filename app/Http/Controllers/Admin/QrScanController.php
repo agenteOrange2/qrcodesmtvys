@@ -4,9 +4,11 @@ namespace App\Http\Controllers\Admin;
 
 use App\Models\QrScan;
 use Illuminate\Http\Request;
+use App\Exports\UserQrScanExport;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Maatwebsite\Excel\Facades\Excel;
 
 class QrScanController extends Controller
 {
@@ -15,10 +17,24 @@ class QrScanController extends Controller
      */
     public function index()
     {
-        $scans = QrScan::with('user')->get();
+        // Contador total de escaneos (solo para administradores)
+        $totalScanCount = QrScan::count();
+        
+        // Verificar si el usuario es Administrador
+        if (Auth::user()->hasRole('Administrador')) {
+            // Administrador ve todos los registros
+            $scans = QrScan::with('user')->get();
+        } else {
+            // Usuarios con rol distinto a Administrador solo ven sus propios registros
+            $scans = QrScan::where('user_id', Auth::id())->with('user')->get();
+        }
 
-        return view('admin.scanner.index', compact('scans'));
+        // Contador de escaneos
+        $scanCount = $scans->count();
+
+        return view('admin.scanner.index', compact('scans', 'scanCount', 'totalScanCount'));        
     }
+
 
     /**
      * Show the form for creating a new resource.
@@ -83,6 +99,11 @@ class QrScanController extends Controller
         //
     }
 
+    public function export()
+    {
+        return Excel::download(new UserQrScanExport, 'usuarios_capturados.xlsx');
+    }
+
     /**
      * Show the form for editing the specified resource.
      */
@@ -114,19 +135,18 @@ class QrScanController extends Controller
             'rol' => 'nullable|string|max:255',
             'campos_adicionales' => 'nullable|string', // Cambia el campo a string
         ]);
-    
+
         // Convertir los datos adicionales a array si están presentes
         if ($request->filled('campos_adicionales')) {
             $usuarios_capturado->campos_adicionales = json_encode(explode("\n", $request->campos_adicionales));
         }
-    
+
         // Actualizar el registro
         $usuarios_capturado->update($request->except('campos_adicionales')); // Excluir campos_adicionales si ya fue actualizado
-    
-        return redirect()->route('admin.usuarios-capturados.index');
 
+        return redirect()->route('admin.usuarios-capturados.index');
     }
-    
+
 
     /**
      * Remove the specified resource from storage.

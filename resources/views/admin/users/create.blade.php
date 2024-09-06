@@ -4,7 +4,7 @@
 
             <form action="{{ route('admin.users.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
-
+                <x-validation-errors class="my-4" />
                 <div class="grid gap-6 my-4 md:grid-cols-2">
                     <div class="profile_avatar flex justify-center relative">
                         <img class="rounded-full w-[50%]" src="{{ asset('img/profile_user.webp') }}" id="imgPreview"
