@@ -13,20 +13,20 @@ class UsersTable extends DataTableComponent
     public function configure(): void
     {
         $this->setPrimaryKey('id')
-        ->setTableRowUrl(function ($row) {
-            return route('admin.users.edit', ['user' => $row->id]);
-        })
-        ->setTableRowUrlTarget(function ($row) {
-            return '_blank';
-        });
-    $this->setDefaultSort('id', 'desc');
-    $this->setSingleSortingDisabled();
-    $this->setPerPageAccepted([10, 25, 50, 100, -1]);
-    $this->setPerPage(10);
+            ->setTableRowUrl(function ($row) {
+                return route('admin.users.edit', ['user' => $row->id]);
+            })
+            ->setTableRowUrlTarget(function ($row) {
+                return '_blank';
+            });
+        $this->setDefaultSort('id', 'desc');
+        $this->setSingleSortingDisabled();
+        $this->setPerPageAccepted([10, 25, 50, 100, -1]);
+        $this->setPerPage(10);
 
-    $this->setBulkActions([
-        'deleteSelected' => 'Eliminar',
-    ]);
+        $this->setBulkActions([
+            'deleteSelected' => 'Eliminar',
+        ]);
     }
 
     public function columns(): array
@@ -37,10 +37,10 @@ class UsersTable extends DataTableComponent
                 ->unclickable(),
             Column::make("Nombre", "name")
                 ->sortable()
-                ->searchable(fn($query, $searchTerm) => $query->orWhere('users.name', 'like', '%' . $searchTerm . '%')),            
+                ->searchable(fn($query, $searchTerm) => $query->orWhere('users.name', 'like', '%' . $searchTerm . '%')),
             Column::make("Apellido", "last_name")
                 ->sortable()
-                ->searchable(fn($query, $searchTerm) => $query->orWhere('users.last_name', 'like', '%' . $searchTerm . '%')),            
+                ->searchable(fn($query, $searchTerm) => $query->orWhere('users.last_name', 'like', '%' . $searchTerm . '%')),
             Column::make("Email", "email")
                 ->sortable()
                 ->collapseOnTablet()

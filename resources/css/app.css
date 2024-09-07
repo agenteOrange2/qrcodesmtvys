@@ -21,3 +21,32 @@
         max-width: 100%!important;
     }
 }
+
+
+#scan-counter {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 100;
+}
+
+#scan-counter button {
+    display: flex;
+    align-items: center;
+    background-color: #3b82f6; /* color azul */
+    color: white;
+    border-radius: 50px;
+    padding: 10px 20px;
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+}
+
+#scan-counter button:hover {
+    background-color: #2563eb; /* Cambia a un azul más oscuro al hacer hover */
+}
+
+#scan-counter i {
+    font-size: 20px;
+    margin-right: 10px;
+}
