@@ -12,7 +12,7 @@
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,600&display=swap" rel="stylesheet" />
     <!-- Styles -->
-    <link rel="stylesheet" href="{{ asset('build/css/frontend.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('build/css/frontend.css') }}">
     @vite('resources/css/app.css') <!-- Aquí se cargan los estilos que configuraste en Vite -->
 </head>
 
@@ -20,9 +20,9 @@
 
     <nav class="navbar" id="navbar">
         <div class="container relative flex flex-wrap items-center justify-between">
-            <a class="navbar-brand md:me-8" href="index.html">
+            <a class="navbar-brand md:me-8" href="{{route('welcome')}}">
                 <img src="{{ asset('img/logo_smtvys.png') }}" class="h-5 inline-block dark:hidden" alt="">
-                <img src="assets/images/logo-light.png" class="h-5 hidden dark:inline-block" alt="">
+                <img src="{{ asset('img/logo_smtvys.png') }}" class="h-5 hidden dark:inline-block" alt="">
             </a>
 
             <div class="nav-icons flex items-center lg_992:order-2 md:ms-6">
@@ -327,8 +327,8 @@
                         <p class="text-gray-400">©
                             <script>
                                 document.write(new Date().getFullYear())
-                            </script> Appever. Design with <i class="mdi mdi-heart text-red-700"></i> by
-                            <a href="https://shreethemes.in/" target="_blank" class="text-reset">Shreethemes</a>.
+                            </script> SMTVYS. Diseño y Desarrollado por <i class="mdi mdi-heart text-red-700"></i>
+                            <a href="https://kuiraweb.com" target="_blank" class="text-reset">Kuiraweb</a>.
                         </p>
                     </div>
                 </div>
