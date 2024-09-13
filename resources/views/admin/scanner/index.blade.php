@@ -35,7 +35,8 @@
 
             <!-- Tabla de Livewire -->
             <div class="my-6">
-                <livewire:qrscan-table />
+                <livewire:qr-scan-table />
+                
             </div>
         </div>
     </div>
