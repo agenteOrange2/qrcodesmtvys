@@ -43,19 +43,19 @@ Route::middleware(['auth'])->group(function () {
     /* ****************************** */
     /* **** CRUD ROLES ***** */
     /* ****************************** */
-    Route::resource('roles', RoleController::class)->middleware('can:roles');
+    Route::resource('roles', RoleController::class);
 
     /* ****************************** */
     /* **** CRUD PERMISSIONS ***** */
     /* ****************************** */
-    Route::resource('permissions', PermissionController::class)->middleware('can:permissions');
+    Route::resource('permissions', PermissionController::class);
 
 
     /* ****************************** */
     /* **** CRUD USERS ***** */
     /* ****************************** */
 
-    Route::resource('users', UserController::class)->middleware('can:users');
+    Route::resource('users', UserController::class);
 
 
     /* ****************************** */
