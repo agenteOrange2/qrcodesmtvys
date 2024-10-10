@@ -91,11 +91,9 @@
         <div class="container relative">
             <div class="grid md:grid-cols-2 grid-cols-1 items-center mt-6 gap-[30px] relative">
                 <div class="md:me-6">
-                    <h6 class="text-blue-700 uppercase text-sm font-bold tracking-wider mb-3">App Showcase</h6>
-                    <h4 class="font-bold lg:leading-normal leading-normal text-[42px] lg:text-[54px] mb-5">Creative way
-                        to Showcase your app</h4>
-                    <p class="text-slate-400 text-lg max-w-xl">Gain valuable insights into user behavior and drive
-                        data-informed decision-making with our revolutionary platform.</p>
+                    <h6 class="text-blue-700 uppercase text-sm font-bold tracking-wider mb-3">SMTVYS APP</h6>
+                    <h4 class="font-bold lg:leading-normal leading-normal text-[42px] lg:text-[54px] mb-5">SMTVYS Scan App</h4>
+                    <p class="text-slate-400 text-lg max-w-xl">Plataforma enfocada en capturar datos mediante un código QR, Generar QR para poder compartir con los conocidos o bien para compartir las redes de manera mas intuitiva</p>
 
                     <div class="mt-6">
                         <a href="#"><img src="assets/images/app.png" class="h-12 inline-block m-1"
