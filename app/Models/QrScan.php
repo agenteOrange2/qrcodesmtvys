@@ -26,4 +26,8 @@ class QrScan extends Model
     {
         return $this->belongsTo(User::class, 'user_id');        
     }
+
+    public function marcas() {
+        return $this->belongsToMany(Marca::class, 'marca_qr_scan')->withPivot('comentarios'); // 'comentarios'
+    }
 }

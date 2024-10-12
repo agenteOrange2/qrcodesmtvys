@@ -25,6 +25,12 @@
                             {{ __('Scan') }}
                         </x-nav-link>
                     @endcan
+                    <!-- Mostrar el enlace Scan solo si el usuario tiene el permiso 'scan' -->
+                    @can('scan')
+                        <x-nav-link href="{{ route('admin.marcas.index') }}" :active="request()->routeIs('admin.marcas.index')">
+                            {{ __('Marca') }}
+                        </x-nav-link>
+                    @endcan
 
                     <!-- Mostrar el enlace Usuarios Capturados solo si el usuario tiene el permiso 'captura' -->
                     @can('captura')
@@ -174,7 +180,7 @@
 
     <!-- Responsive Navigation Menu -->
     <div :class="{ 'block': open, 'hidden': !open }" class="hidden sm:hidden">
-        <div class="pt-2 pb-3 space-y-1">            
+        <div class="pt-2 pb-3 space-y-1">
             @can('dashboard')
                 <x-responsive-nav-link href="{{ route('admin.dashboard') }}" :active="request()->routeIs('admin.dashboard')">
                     {{ __('Dashboard') }}

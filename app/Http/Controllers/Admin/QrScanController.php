@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Models\Marca;
 use App\Models\QrScan;
 use Illuminate\Http\Request;
 use App\Exports\UserQrScanExport;
@@ -19,7 +20,10 @@ class QrScanController extends Controller
     {
         // Contador total de escaneos (solo para administradores)
         $totalScanCount = QrScan::count();
-        
+
+        // Obtener todas las marcas
+        $marcas = Marca::all(); // Obtenemos todas las marcas para los checkboxes
+
         // Verificar si el usuario es Administrador
         if (Auth::user()->hasRole('Administrador')) {
             // Administrador ve todos los registros
@@ -32,17 +36,14 @@ class QrScanController extends Controller
         // Contador de escaneos
         $scanCount = $scans->count();
 
-        return view('admin.scanner.index', compact('scans', 'scanCount', 'totalScanCount'));        
+        return view('admin.scanner.index', compact('scans', 'scanCount', 'totalScanCount', 'marcas'));
     }
 
 
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
-    {
-        //
-    }
+    public function create() {}
 
     /**
      * Store a newly created resource in storage.
@@ -51,8 +52,11 @@ class QrScanController extends Controller
     {
         Log::info('Entrando al método store de QrScanController');
 
+        // Ver el contenido de la solicitud para depuración
+        Log::debug($request->all());
+
         try {
-            // Validar y procesar los datos recibidos
+            // Validar los datos recibidos
             $data = $request->validate([
                 'nombre' => 'nullable|string|max:255',
                 'apellidos' => 'nullable|string|max:255',
@@ -61,9 +65,10 @@ class QrScanController extends Controller
                 'telefono' => 'nullable|string|max:255',
                 'rol' => 'nullable|string|max:255',
                 'correo' => 'nullable|string|max:255',
-                'campos_adicionales' => 'nullable|array',
+                'marcas' => 'nullable|array', // Marcas seleccionadas
+                'comentarios' => 'nullable|array', // Comentarios asociados a las marcas
+                'campos_adicionales' => 'nullable|array', // Campos adicionales
             ]);
-
 
             // Verificar si ya existe un registro con el mismo correo
             $existingScan = QrScan::where('correo', $data['correo'])->first();
@@ -75,14 +80,22 @@ class QrScanController extends Controller
 
             Log::info('Datos validados correctamente:', $data);
 
-            // Convertir campos adicionales a JSON
+            // Guardar campos adicionales como JSON
             $data['campos_adicionales'] = json_encode($data['campos_adicionales']);
             $data['user_id'] = Auth::id();
 
-            // Crear el registro
+            // Crear el registro de escaneo
             $qrScan = QrScan::create($data);
 
             Log::info('Registro creado correctamente:', $qrScan->toArray());
+
+            // Guardar las marcas seleccionadas y sus comentarios en la tabla pivot
+            if (!empty($data['marcas'])) {
+                foreach ($data['marcas'] as $marcaId) {
+                    $comentario = $data['comentarios'][$marcaId] ?? null; // Obtener el comentario si existe
+                    $qrScan->marcas()->attach($marcaId, ['comentarios' => $comentario]);
+                }
+            }
 
             return response()->json(['message' => 'Escaneo guardado exitosamente.'], 200);
         } catch (\Exception $e) {
@@ -90,6 +103,7 @@ class QrScanController extends Controller
             return response()->json(['error' => 'Error durante el almacenamiento'], 500);
         }
     }
+
 
     /**
      * Display the specified resource.
@@ -109,17 +123,30 @@ class QrScanController extends Controller
      */
     public function edit(QrScan $usuarios_capturado)
     {
-        // Decodificar los campos adicionales
+        // Obtener todas las marcas disponibles
+        $marcas = Marca::all();
+
+        // Obtener las marcas seleccionadas para este escaneo, junto con sus comentarios
+        $marcasSeleccionadas = $usuarios_capturado->marcas->pluck('id')->toArray();
+        $comentarios = $usuarios_capturado->marcas->pluck('pivot.comentarios', 'id')->toArray(); // Comentarios del pivot
+
+        // Decodificar los campos adicionales del JSON
         $campos_adicionales = json_decode($usuarios_capturado->campos_adicionales, true);
 
-        // Si es null o vacío, asignar una cadena vacía
-        $campos_adicionales_formateados = $campos_adicionales && is_array($campos_adicionales)
-            ? implode("\n", $campos_adicionales)
-            : '';
+        // Formatear los campos adicionales como una cadena para mostrar en la textarea
+        $campos_adicionales_formateados = $campos_adicionales ? implode("\n", $campos_adicionales) : '';
 
-        // Pasar los datos formateados a la vista
-        return view('admin.scanner.edit', compact('usuarios_capturado', 'campos_adicionales_formateados'));
+        // Pasar los datos a la vista
+        return view('admin.scanner.edit', compact(
+            'usuarios_capturado',
+            'marcas',
+            'marcasSeleccionadas',
+            'comentarios',
+            'campos_adicionales_formateados'
+        ));
     }
+
+
 
     /**
      * Update the specified resource in storage.
@@ -133,19 +160,26 @@ class QrScanController extends Controller
             'correo' => 'nullable|string|max:255',
             'telefono' => 'nullable|string|max:255',
             'rol' => 'nullable|string|max:255',
-            'campos_adicionales' => 'nullable|string', // Cambia el campo a string
+            'campos_adicionales' => 'nullable|string',
+            'marcas' => 'nullable|array', // Marcas seleccionadas
+            'comentarios' => 'nullable|array', // Comentarios asociados
         ]);
-
-        // Convertir los datos adicionales a array si están presentes
-        if ($request->filled('campos_adicionales')) {
-            $usuarios_capturado->campos_adicionales = json_encode(explode("\n", $request->campos_adicionales));
-        }
-
+    
         // Actualizar el registro
-        $usuarios_capturado->update($request->except('campos_adicionales')); // Excluir campos_adicionales si ya fue actualizado
-
+        $usuarios_capturado->update($request->except('marcas', 'comentarios'));
+    
+        // Actualizar marcas y comentarios en la tabla pivot
+        $usuarios_capturado->marcas()->detach(); // Eliminar las marcas anteriores
+        if ($request->filled('marcas')) {
+            foreach ($request->marcas as $marcaId) {
+                $comentario = $request->comentarios[$marcaId] ?? null;
+                $usuarios_capturado->marcas()->attach($marcaId, ['comentarios' => $comentario]);
+            }
+        }
+    
         return redirect()->route('admin.usuarios-capturados.index');
     }
+    
 
 
     /**

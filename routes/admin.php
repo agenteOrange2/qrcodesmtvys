@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\ExpoController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\MarcaController;
 use App\Http\Controllers\Admin\QrScanController;
 use App\Http\Controllers\Admin\PermissionController;
 
@@ -36,9 +37,16 @@ Route::middleware(['auth'])->group(function () {
     /* **** CRUD SCAN ***** */
     /* ****************************** */
     Route::get('scan', function () {
-        return view('admin.scanner.scan');
+        // Obtener las marcas directamente en esta ruta
+        $marcas = App\Models\Marca::all();
+        return view('admin.scanner.scan', compact('marcas')); // Pasa las marcas a la vista
     })->middleware('can:scan')->name('scan');
+    
 
+    /* ****************************** */
+    /* **** CRUD MARCAS ***** */
+    /* ****************************** */
+    Route::resource('marcas', MarcaController::class);
 
     /* ****************************** */
     /* **** CRUD ROLES ***** */
