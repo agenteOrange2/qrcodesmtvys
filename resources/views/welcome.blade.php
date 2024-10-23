@@ -25,6 +25,7 @@
                 <img src="{{ asset('img/logo_smtvys.png') }}" class="h-5 hidden dark:inline-block" alt="">
             </a>
 
+            </a>            
             <div class="nav-icons flex items-center lg_992:order-2 md:ms-6">
                 <!-- Navbar Button -->
                 <ul class="list-none menu-social mb-0">
