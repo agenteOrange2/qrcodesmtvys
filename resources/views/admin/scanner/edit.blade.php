@@ -3,15 +3,14 @@
 
     <section class=" py-1 bg-blueGray-50">
         <div class="w-full lg:w-8/12 px-4 mx-auto mt-6">
-            <div
-                class="relative flex flex-col min-w-0 break-words w-full mb-6 shadow-lg rounded-lg bg-blueGray-100 border-0">
+            <div class="relative flex flex-col min-w-0 break-words w-full mb-6 shadow-lg rounded-lg bg-blueGray-100 border-0">
                 <div class="rounded-t bg-white mb-0 px-6 py-6">
                     <div class="text-center flex justify-between">
                         <h6 class="text-blueGray-700 text-xl font-bold">
                             Editar Información {{ $usuarios_capturado->nombre }} {{ $usuarios_capturado->apellidos }}
                         </h6>
                         <button
-                            class="bg-pink-500 text-white active:bg-pink-600 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150"
+                            class="bg-blue-700 text-white active:bg-blue-600 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150"
                             type="button">
                             Settings
                         </button>
@@ -101,18 +100,34 @@
                             </div>
                         </div>
 
+                        <hr class="mt-6 border-b-1 border-blueGray-300">
+
+                        <h6 class="text-blueGray-400 text-sm mt-3 mb-6 font-bold uppercase">
+                            Marcas Seleccionadas
+                        </h6>
+
                         @foreach ($marcas as $marca)
-                        <div class="flex items-center">
-                            <input type="checkbox" id="marca_{{ $marca->id }}" name="marcas[]"
-                                value="{{ $marca->id }}" 
-                                {{ in_array($marca->id, $marcasSeleccionadas) ? 'checked' : '' }}>
-                            <label for="marca_{{ $marca->id }}">{{ $marca->nombre }}</label>
-                        </div>
-                        <textarea name="comentarios[{{ $marca->id }}]" 
-                                  placeholder="Comentario para {{ $marca->nombre }}">
-                            {{ old("comentarios[{$marca->id}]", $comentarios[$marca->id] ?? '') }}
-                        </textarea>
-                    @endforeach
+                            <div class="flex flex-wrap items-center my-4 px-4 md:flex-row flex-col">
+                                <!-- Checkbox y Etiqueta -->
+                                <div class="flex items-center w-full md:w-1/4 mb-4 md:mb-0">
+                                    <input
+                                        class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                                        type="checkbox" id="marca_{{ $marca->id }}" name="marcas[]"
+                                        value="{{ $marca->id }}"
+                                        {{ in_array($marca->id, $marcasSeleccionadas) ? 'checked' : '' }}>
+                                    <label class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-700"
+                                        for="marca_{{ $marca->id }}">{{ $marca->nombre }}</label>
+                                </div>
+                                <!-- Comentario -->
+                                <div class="w-full md:w-3/4">
+                                    <textarea rows="2"
+                                    class="block p-2.5 w-full text-sm text-gray-900 bg-white rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 "
+                                    name="comentarios[{{ $marca->id }}]"
+                                    placeholder="Comentario para {{ $marca->nombre }}">{{ old("comentarios[{$marca->id}]", $comentarios[$marca->id] ?? '') }}</textarea>
+                                </div>
+                            </div>
+                        @endforeach
+
 
                         <hr class="mt-6 border-b-1 border-blueGray-300">
 

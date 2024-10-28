@@ -194,6 +194,12 @@
                 </x-responsive-nav-link>
             @endcan
 
+            @can('scan')
+                <x-responsive-nav-link href="{{ route('admin.marcas.index') }}" :active="request()->routeIs('admin.marcas.index')">
+                    {{ __('Marca') }}
+                </x-responsive-nav-link>
+        @endcan
+
             <!-- Mostrar el enlace Usuarios Capturados solo si el usuario tiene el permiso 'captura' -->
             @can('captura')
                 <x-responsive-nav-link href="{{ route('admin.usuarios-capturados.index') }}" :active="request()->routeIs('admin.usuarios-capturados.index')">

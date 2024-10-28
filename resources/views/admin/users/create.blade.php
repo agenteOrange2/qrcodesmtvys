@@ -133,11 +133,10 @@
                         type="submit">
                         + Crear Usuario
                     </button>
-                    <button
-                        class="ml-2 bg-gray-300 hover:bg-gray-400 text-gray-700 font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                        type="button">
-                        Discard
-                    </button>
+                    <a href="{{route('admin.users.index')}}"
+                        class="ml-2 bg-red-700 hover:bg-red-900 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                       Cancelar
+                    </a>
                 </div>
             </form>
         </div>

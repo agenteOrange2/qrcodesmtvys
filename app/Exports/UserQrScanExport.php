@@ -18,12 +18,12 @@ class UserQrScanExport implements FromCollection, WithHeadings, WithMapping, Wit
     use Exportable;
 
     /**
-    * @return \Illuminate\Support\Collection
-    */
+     * @return \Illuminate\Support\Collection
+     */
     public function collection()
     {
-        // Obtener todos los registros de la tabla QrScan
-        return QrScan::all();
+        // Obtener todos los registros de QrScan junto con las marcas
+        return QrScan::with('marcas')->get();
     }
 
     /**
@@ -31,8 +31,8 @@ class UserQrScanExport implements FromCollection, WithHeadings, WithMapping, Wit
      */
     public function headings(): array
     {
-        return [
-            
+        // Encabezados fijos
+        $headings = [
             'ID',
             'User ID',
             'Nombre',
@@ -45,7 +45,16 @@ class UserQrScanExport implements FromCollection, WithHeadings, WithMapping, Wit
             'Datos Adicionales',
             'Creado en',
             'Actualizado en',
-        ];           
+        ];
+
+        // Obtener todas las marcas y agregar columnas para cada marca
+        $marcas = \App\Models\Marca::all();
+        foreach ($marcas as $marca) {
+            $headings[] = 'Marca: ' . $marca->nombre;
+            $headings[] = 'Comentario: ' . $marca->nombre;
+        }
+
+        return $headings;
     }
 
     /**
@@ -53,7 +62,8 @@ class UserQrScanExport implements FromCollection, WithHeadings, WithMapping, Wit
      */
     public function map($qrScan): array
     {
-        return [
+        // Columnas fijas del usuario
+        $row = [
             $qrScan->id,
             $qrScan->user_id,
             $qrScan->nombre,
@@ -64,9 +74,27 @@ class UserQrScanExport implements FromCollection, WithHeadings, WithMapping, Wit
             $qrScan->rol,
             $qrScan->correo,
             $qrScan->campos_adicionales,
-            Date::dateTimeToExcel($qrScan->created_at), // Formato Excel para la fecha
+            Date::dateTimeToExcel($qrScan->created_at),
             Date::dateTimeToExcel($qrScan->updated_at),
         ];
+
+        // Obtener las marcas seleccionadas por el usuario y agregarlas dinámicamente
+        $marcas = \App\Models\Marca::all();
+        $marcasSeleccionadas = $qrScan->marcas->pluck('pivot.comentarios', 'id')->toArray();
+
+        foreach ($marcas as $marca) {
+            if (array_key_exists($marca->id, $marcasSeleccionadas)) {
+                // Si el usuario tiene esta marca seleccionada, se agrega la marca y el comentario
+                $row[] = 'Sí'; // Marca seleccionada
+                $row[] = $marcasSeleccionadas[$marca->id]; // Comentario de la marca
+            } else {
+                // Si no está seleccionada, se deja en blanco
+                $row[] = 'No'; // Marca no seleccionada
+                $row[] = '';    // Sin comentario
+            }
+        }
+
+        return $row;
     }
 
     /**

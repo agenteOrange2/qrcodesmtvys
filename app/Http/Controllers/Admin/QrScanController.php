@@ -50,10 +50,10 @@ class QrScanController extends Controller
      */
     public function store(Request $request)
     {
-        Log::info('Entrando al método store de QrScanController');
+        //Log::info('Entrando al método store de QrScanController');
 
         // Ver el contenido de la solicitud para depuración
-        Log::debug($request->all());
+        //Log::debug($request->all());
 
         try {
             // Validar los datos recibidos
@@ -74,11 +74,14 @@ class QrScanController extends Controller
             $existingScan = QrScan::where('correo', $data['correo'])->first();
 
             if ($existingScan) {
-                Log::warning('El usuario ya ha sido registrado previamente:', ['correo' => $data['correo']]);
-                return response()->json(['error' => 'Este usuario ya fue registrado previamente.'], 409);
+                //Log::warning('El usuario ya ha sido registrado previamente:', ['correo' => $data['correo']]);
+                return response()->json([
+                    'error' => 'Este usuario ya fue registrado previamente.',
+                    'existingScanId' => $existingScan->id,
+                ], 409);
             }
 
-            Log::info('Datos validados correctamente:', $data);
+            //Log::info('Datos validados correctamente:', $data);
 
             // Guardar campos adicionales como JSON
             $data['campos_adicionales'] = json_encode($data['campos_adicionales']);
@@ -87,19 +90,22 @@ class QrScanController extends Controller
             // Crear el registro de escaneo
             $qrScan = QrScan::create($data);
 
-            Log::info('Registro creado correctamente:', $qrScan->toArray());
+            //Log::info('Registro creado correctamente:', $qrScan->toArray());
 
             // Guardar las marcas seleccionadas y sus comentarios en la tabla pivot
-            if (!empty($data['marcas'])) {
-                foreach ($data['marcas'] as $marcaId) {
-                    $comentario = $data['comentarios'][$marcaId] ?? null; // Obtener el comentario si existe
-                    $qrScan->marcas()->attach($marcaId, ['comentarios' => $comentario]);
+            foreach ($request->all() as $key => $value) {
+                if (strpos($key, 'marca_') === 0 && strpos($key, '_custom_field') !== false) {
+                    $marcaId = str_replace(['marca_', '_custom_field'], '', $key);  // Obtener el ID de la marca
+                    $comentario = $value; // Obtener el comentario de la marca
+                    $qrScan->marcas()->attach($marcaId, ['comentarios' => $comentario]); // Guardar en la tabla pivot
                 }
             }
 
+            //Log::info('Registro creado correctamente:', $qrScan->toArray());
+
             return response()->json(['message' => 'Escaneo guardado exitosamente.'], 200);
         } catch (\Exception $e) {
-            Log::error('Error durante el almacenamiento:', ['exception' => $e->getMessage()]);
+            //Log::error('Error durante el almacenamiento:', ['exception' => $e->getMessage()]);
             return response()->json(['error' => 'Error durante el almacenamiento'], 500);
         }
     }

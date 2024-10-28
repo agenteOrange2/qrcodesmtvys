@@ -59,12 +59,12 @@
                                 </tr>
                             @endforelse
                         </tbody>
-{{-- 
+
                         <form action="{{ route('admin.marcas.destroy', $marca) }}" method="POST"
                             id="formDelete">
                             @csrf
                             @method('DELETE')
-                        </form> --}}
+                        </form>
                     </table>
                 </div>
             </div>

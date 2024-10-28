@@ -13,7 +13,7 @@
                     Ver Roles
                 </a>
             </div>
-            <div class="overflow-hidden shadow-xl sm:rounded-lg p-8">                                
+            <div class="overflow-hidden bg-white shadow-xl sm:rounded-lg p-8">                                
                 <livewire:users-table />
             </div>
         </div>

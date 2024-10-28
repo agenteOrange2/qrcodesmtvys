@@ -5,7 +5,7 @@
                 <h1 class="text-2xl font-bold mb-4">Escanear Código QR</h1>
                 <div class="container text-center">
                     <div class="box-scanner">
-                        <div id="reader" class="mx-auto  p-4  rounded-lg shadow-md"
+                        <div id="reader" class="mx-auto p-4 rounded-lg shadow-md"
                             style="height: 80vh; align-content:center;">
                         </div>
                     </div>
@@ -17,7 +17,7 @@
                             <div class="mb-4">
                                 <label for="nombre" class="block mb-2 text-sm font-bold text-blue-900">Nombre:</label>
                                 <input type="text" id="nombre"
-                                    class="mb-6 bg-gray-100 border border-blue-800 font-semibold text-gray-900 text-sm rounded-lg block w-full p-2.5 cursor-not-allowed"
+                                    class="mb-6 bg-white border border-blue-800 font-semibold text-gray-900 text-sm rounded-lg block w-full p-2.5 cursor-not-allowed"
                                     value="" disabled>
                             </div>
 
@@ -25,14 +25,14 @@
                                 <label for="apellidos"
                                     class="block mb-2 text-sm font-bold text-blue-900">Apellidos:</label>
                                 <input type="text" id="apellidos"
-                                    class="mb-6 bg-gray-100 border border-blue-800 font-semibold text-gray-900 text-sm rounded-lg block w-full p-2.5 cursor-not-allowed"
+                                    class="mb-6 bg-white border border-blue-800 font-semibold text-gray-900 text-sm rounded-lg block w-full p-2.5 cursor-not-allowed"
                                     value="" disabled>
                             </div>
 
                             <div class="mb-4">
                                 <label for="puesto" class="block mb-2 text-sm font-bold text-blue-900">Puesto:</label>
                                 <input type="text" id="puesto"
-                                    class="mb-6 bg-gray-100 border border-blue-800 font-semibold text-gray-900 text-sm rounded-lg block w-full p-2.5 cursor-not-allowed"
+                                    class="mb-6 bg-white border border-blue-800 font-semibold text-gray-900 text-sm rounded-lg block w-full p-2.5 cursor-not-allowed"
                                     value="" disabled>
                             </div>
 
@@ -41,7 +41,7 @@
                                 <label for="empresa"
                                     class="block mb-2 text-sm font-bold text-blue-900">Empresa:</label>
                                 <input type="text" id="empresa"
-                                    class="mb-6 bg-gray-100 border border-blue-800 font-semibold text-gray-900 text-sm rounded-lg block w-full p-2.5 cursor-not-allowed"
+                                    class="mb-6 bg-white border border-blue-800 font-semibold text-gray-900 text-sm rounded-lg block w-full p-2.5 cursor-not-allowed"
                                     value="" disabled>
                             </div>
 
@@ -49,14 +49,14 @@
                                 <label for="telefono"
                                     class="block mb-2 text-sm font-bold text-blue-900">Teléfono:</label>
                                 <input type="text" id="telefono"
-                                    class="mb-6 bg-gray-100 border border-blue-800 font-semibold text-gray-900 text-sm rounded-lg block w-full p-2.5 cursor-not-allowed"
+                                    class="mb-6 bg-white border border-blue-800 font-semibold text-gray-900 text-sm rounded-lg block w-full p-2.5 cursor-not-allowed"
                                     value="" disabled>
                             </div>
 
                             <div class="mb-4">
                                 <label for="correo" class="block mb-2 text-sm font-bold text-blue-900">Correo:</label>
                                 <input type="text" id="correo"
-                                    class="mb-6 bg-gray-100 border border-blue-800 font-semibold text-gray-900 text-sm rounded-lg block w-full p-2.5 cursor-not-allowed"
+                                    class="mb-6 bg-white border border-blue-800 font-semibold text-gray-900 text-sm rounded-lg block w-full p-2.5 cursor-not-allowed"
                                     value="" disabled>
                             </div>
 
@@ -69,7 +69,7 @@
                             <!-- Checkboxes para las marcas -->
                             <div class="mt-4">
                                 <h3 class="text-lg font-bold text-blue-800">Seleccione las Marcas</h3>
-                                <div class="grid grid-cols-1 gap-4">
+                                <div class="grid grid-cols-1 gap-4 py-4">
                                     @foreach ($marcas as $marca)
                                         <div class="flex items-center">
                                             <input type="checkbox" id="marca_{{ $marca->id }}" name="marcas[]"
@@ -87,6 +87,7 @@
                                             <textarea id="campo_marca_{{ $marca->id }}" name="campo_marca_{{ $marca->id }}" rows="2"
                                                 class="block w-full p-2.5 bg-gray-50 border border-gray-300 rounded-lg text-sm focus:ring-blue-500 focus:border-blue-500"></textarea>
                                         </div>
+                                        <hr class="mt-6 border-b-1 border-blueGray-300">
                                     @endforeach
                                 </div>
                             </div>
@@ -117,194 +118,211 @@
     </div>
 
     @push('js')
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        let scanCount = 1;
-        let lastScannedCode = ''; // Para almacenar el último código escaneado
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                let scanCount = 1;
+                let lastScannedCode = ''; // Para almacenar el último código escaneado
 
-        function resetFields() {
-            // Limpiar todos los campos de entrada
-            const campos = ['nombre', 'apellidos', 'puesto', 'empresa', 'telefono', 'rol', 'correo'];
-            campos.forEach(campo => {
-                const input = document.getElementById(campo);
-                if (input) input.value = '';
-            });
-
-            document.getElementById('additional-fields').innerHTML = ''; // Limpiar los campos adicionales
-            const additionalInfo = document.getElementById('additional-info');
-            if (additionalInfo) additionalInfo.value = ''; // Limpiar el campo de info adicional
-
-            document.getElementById('qr-result').classList.add('hidden'); // Ocultar la sección de resultado
-
-            // Limpiar los campos de marcas adicionales
-            const customFields = document.querySelectorAll('[id^="custom_field_"]');
-            customFields.forEach(field => {
-                field.classList.add('hidden');
-                field.querySelector('textarea').value = ''; // Limpiar el campo de texto
-            });
-
-            // Desmarcar todos los checkboxes de marcas
-            const checkboxes = document.querySelectorAll('input[name="marcas[]"]');
-            checkboxes.forEach(checkbox => {
-                checkbox.checked = false;
-            });
-        }
-
-        function handleCheckboxChange(id) {
-            const customField = document.getElementById(`custom_field_${id}`);
-            if (customField) {
-                // Mostrar u ocultar el campo personalizado basado en si el checkbox está seleccionado
-                const checkbox = document.getElementById(`marca_${id}`);
-                if (checkbox && checkbox.checked) {
-                    customField.classList.remove('hidden');
-                } else {
-                    customField.classList.add('hidden');
-                    customField.querySelector('textarea').value = ''; // Limpiar el campo de texto cuando se deselecciona
-                }
-            }
-        }
-
-        function bindCheckboxEvents() {
-            // Vincular el evento change para los checkboxes
-            const checkboxes = document.querySelectorAll('input[name="marcas[]"]');
-            checkboxes.forEach(checkbox => {
-                checkbox.addEventListener('change', function() {
-                    handleCheckboxChange(checkbox.value);
-                });
-            });
-        }
-
-        function onScanSuccess(decodedText, decodedResult) {
-            // Si el nuevo código es igual al último escaneado, no hacemos nada
-            if (decodedText === lastScannedCode) {
-                return;
-            }
-
-            lastScannedCode = decodedText; // Actualizamos el último código escaneado
-
-            // Formateo del texto del QR usando delimitadores
-            let delimiters = ['^', '*', '-', '|'];
-            let delimiter = delimiters.find(d => decodedText.includes(d)) || '^';
-            let values = decodedText.split(delimiter);
-
-            // Si el primer valor es una cadena vacía, elimínalo
-            if (values[0] === '') {
-                values.shift();
-            }
-
-            let data = {
-                nombre: values[0],
-                apellidos: values[1] || '',
-                puesto: values[2] || '',
-                empresa: values[3] || '',
-                telefono: values[4] || '',
-                rol: values[5] || '',
-                correo: values[6] || '',
-                campos_adicionales: values.slice(7) // Inicia con los campos extra del QR
-            };
-
-            // Rellenar los campos de texto con los datos escaneados
-            const campos = ['nombre', 'apellidos', 'puesto', 'empresa', 'telefono', 'rol', 'correo'];
-            campos.forEach((campo, index) => {
-                const input = document.getElementById(campo);
-                if (input) input.value = data[campo];
-            });
-
-            // Limpiar los campos adicionales anteriores
-            let additionalFieldsContainer = document.getElementById('additional-fields');
-            if (additionalFieldsContainer) {
-                additionalFieldsContainer.innerHTML = ''; // Limpiar los campos adicionales
-
-                // Agregar los campos adicionales si los hay
-                data.campos_adicionales.forEach((field, index) => {
-                    let input = document.createElement('input');
-                    input.type = 'text';
-                    input.value = field;
-                    input.disabled = true;
-                    input.classList.add('w-full', 'p-2', 'border', 'rounded', 'mb-4');
-                    additionalFieldsContainer.appendChild(input);
-                });
-            }
-
-            const qrResult = document.getElementById('qr-result');
-            if (qrResult) {
-                qrResult.classList.remove('hidden'); // Mostrar la sección de resultado
-            }
-
-            // Esperar a que el botón "Enviar Información" esté disponible y agregar el evento "click"
-            const sendButton = document.getElementById('send-button');
-            if (sendButton) {
-                sendButton.addEventListener('click', function() {
-                    // Agregar el valor del textarea de datos adicionales a los campos adicionales
-                    let additionalInfo = document.getElementById('additional-info').value;
-                    if (additionalInfo) {
-                        data.campos_adicionales.push(additionalInfo); // Agregarlo a los campos adicionales
-                    }
-
-                    // Agregar los campos personalizados por cada marca seleccionada
-                    const selectedMarcas = document.querySelectorAll('input[name="marcas[]"]:checked');
-                    selectedMarcas.forEach(checkbox => {
-                        const marcaId = checkbox.value;
-                        const customField = document.getElementById(`campo_marca_${marcaId}`).value;
-                        data[`marca_${marcaId}_custom_field`] = customField; // Agregar campo personalizado de la marca
+                function resetFields() {
+                    // Limpiar todos los campos de entrada
+                    const campos = ['nombre', 'apellidos', 'puesto', 'empresa', 'telefono', 'rol', 'correo'];
+                    campos.forEach(campo => {
+                        const input = document.getElementById(campo);
+                        if (input) input.value = '';
                     });
 
-                    fetch('/admin/usuarios-capturados', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                        },
-                        body: JSON.stringify(data)
-                    })
-                    .then(response => response.json())
-                    .then(json => {
-                        if (json.error) {
-                            // Mostrar alerta de error si ya fue registrado
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Oops...',
-                                text: json.error
-                            });
+                    document.getElementById('additional-fields').innerHTML = ''; // Limpiar los campos adicionales
+                    const additionalInfo = document.getElementById('additional-info');
+                    if (additionalInfo) additionalInfo.value = ''; // Limpiar el campo de info adicional
+
+                    document.getElementById('qr-result').classList.add('hidden'); // Ocultar la sección de resultado
+
+                    // Limpiar los campos de marcas adicionales
+                    const customFields = document.querySelectorAll('[id^="custom_field_"]');
+                    customFields.forEach(field => {
+                        field.classList.add('hidden');
+                        field.querySelector('textarea').value = ''; // Limpiar el campo de texto
+                    });
+
+                    // Desmarcar todos los checkboxes de marcas
+                    const checkboxes = document.querySelectorAll('input[name="marcas[]"]');
+                    checkboxes.forEach(checkbox => {
+                        checkbox.checked = false;
+                    });
+                }
+
+                function handleCheckboxChange(id) {
+                    const customField = document.getElementById(`custom_field_${id}`);
+                    if (customField) {
+                        // Mostrar u ocultar el campo personalizado basado en si el checkbox está seleccionado
+                        const checkbox = document.getElementById(`marca_${id}`);
+                        if (checkbox && checkbox.checked) {
+                            customField.classList.remove('hidden');
                         } else {
-                            // Mostrar alerta de éxito si todo salió bien
-                            Swal.fire({
-                                icon: 'success',
-                                title: '¡Éxito!',
-                                text: json.message
-                            }).then(() => {
-                                resetFields(); // Limpiar los campos después del envío
-                                lastScannedCode = ''; // Permitir escanear otro código QR
-                            });
+                            customField.classList.add('hidden');
+                            customField.querySelector('textarea').value =
+                                ''; // Limpiar el campo de texto cuando se deselecciona
                         }
-                    })
-                    .catch(error => console.error('Error:', error));
-                }, { once: true });  // El { once: true } asegura que el evento solo se ejecute una vez
-            }
-        }
+                    }
+                }
 
-        function onScanError(errorMessage) {
-            console.error(`Error de escaneo: ${errorMessage}`);
-        }
+                function bindCheckboxEvents() {
+                    // Vincular el evento change para los checkboxes
+                    const checkboxes = document.querySelectorAll('input[name="marcas[]"]');
+                    checkboxes.forEach(checkbox => {
+                        checkbox.addEventListener('change', function() {
+                            handleCheckboxChange(checkbox.value);
+                        });
+                    });
+                }
 
-        var html5QrcodeScanner = new Html5QrcodeScanner(
-            "reader", {
-                fps: 10,
-                qrbox: {
-                    width: 250,
-                    height: 250
-                },
-                verbose: true
-            }
-        );
+                function onScanSuccess(decodedText, decodedResult) {
+                    // Si el nuevo código es igual al último escaneado, no hacemos nada
+                    if (decodedText === lastScannedCode) {
+                        return;
+                    }
 
-        html5QrcodeScanner.render(onScanSuccess, onScanError);
+                    lastScannedCode = decodedText; // Actualizamos el último código escaneado
 
-        // Vincular eventos de checkboxes cuando la página esté lista
-        bindCheckboxEvents();
-    });
-</script>
-@endpush
+                    // Formateo del texto del QR usando delimitadores
+                    let delimiters = ['^', '*', '-', '|'];
+                    let delimiter = delimiters.find(d => decodedText.includes(d)) || '^';
+                    let values = decodedText.split(delimiter);
+
+                    // Si el primer valor es una cadena vacía, elimínalo
+                    if (values[0] === '') {
+                        values.shift();
+                    }
+
+                    let data = {
+                        nombre: values[0],
+                        apellidos: values[1] || '',
+                        puesto: values[2] || '',
+                        empresa: values[3] || '',
+                        telefono: values[4] || '',
+                        rol: values[5] || '',
+                        correo: values[6] || '',
+                        campos_adicionales: values.slice(7) // Inicia con los campos extra del QR
+                    };
+
+                    // Rellenar los campos de texto con los datos escaneados
+                    const campos = ['nombre', 'apellidos', 'puesto', 'empresa', 'telefono', 'rol', 'correo'];
+                    campos.forEach((campo, index) => {
+                        const input = document.getElementById(campo);
+                        if (input) input.value = data[campo];
+                    });
+
+                    // Limpiar los campos adicionales anteriores
+                    let additionalFieldsContainer = document.getElementById('additional-fields');
+                    if (additionalFieldsContainer) {
+                        additionalFieldsContainer.innerHTML = ''; // Limpiar los campos adicionales
+
+                        // Agregar los campos adicionales si los hay
+                        data.campos_adicionales.forEach((field, index) => {
+                            let input = document.createElement('input');
+                            input.type = 'text';
+                            input.value = field;
+                            input.disabled = true;
+                            input.classList.add('w-full', 'p-2', 'border', 'rounded', 'mb-4');
+                            additionalFieldsContainer.appendChild(input);
+                        });
+                    }
+
+                    const qrResult = document.getElementById('qr-result');
+                    if (qrResult) {
+                        qrResult.classList.remove('hidden'); // Mostrar la sección de resultado
+                    }
+
+                    // Esperar a que el botón "Enviar Información" esté disponible y agregar el evento "click"
+                    const sendButton = document.getElementById('send-button');
+                    if (sendButton) {
+                        sendButton.addEventListener('click', function() {
+                            // Agregar el valor del textarea de datos adicionales a los campos adicionales
+                            let additionalInfo = document.getElementById('additional-info').value;
+                            if (additionalInfo) {
+                                data.campos_adicionales.push(
+                                    additionalInfo); // Agregarlo a los campos adicionales
+                            }
+
+                            // Agregar los campos personalizados por cada marca seleccionada
+                            const selectedMarcas = document.querySelectorAll('input[name="marcas[]"]:checked');
+                            selectedMarcas.forEach(checkbox => {
+                                const marcaId = checkbox.value;
+                                const customField = document.getElementById(`campo_marca_${marcaId}`)
+                                    .value;
+                                data[`marca_${marcaId}_custom_field`] =
+                                    customField; // Agregar campo personalizado de la marca
+                            });
+
+                            fetch('/admin/usuarios-capturados', {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')
+                                            .getAttribute('content')
+                                    },
+                                    body: JSON.stringify(data)
+                                })
+                                .then(response => response.json())
+                                .then(json => {
+                                    if (json.error) {
+                                        // Mostrar alerta de error si ya fue registrado
+                                        Swal.fire({
+                                            icon: 'error',
+                                            title: 'Usuario ya registrado',
+                                            text: json.error,
+                                            showCancelButton: true,
+                                            confirmButtonText: 'Editar Información',
+                                            cancelButtonText: 'Cerrar'
+                                        }).then((result) => {
+                                            if (result.isConfirmed) {
+                                                // Redirigir a la página de edición con el ID correcto
+                                                window.location.href =
+                                                    `/admin/usuarios-capturados/${json.existingScanId}/edit`;
+                                            }
+                                        });
+                                    } else {
+                                        // Mostrar alerta de éxito si todo salió bien
+                                        Swal.fire({
+                                            icon: 'success',
+                                            title: '¡Éxito!',
+                                            text: json.message
+                                        }).then(() => {
+                                            resetFields(); // Limpiar los campos después del envío
+                                            lastScannedCode =
+                                                ''; // Permitir escanear otro código QR
+                                        });
+                                    }
+                                })
+                                .catch(error => console.error('Error:', error));
+                        }, {
+                            once: true
+                        }); // El { once: true } asegura que el evento solo se ejecute una vez
+                    }
+                }
+
+                function onScanError(errorMessage) {
+                    console.error(`Error de escaneo: ${errorMessage}`);
+                }
+
+                var html5QrcodeScanner = new Html5QrcodeScanner(
+                    "reader", {
+                        fps: 10,
+                        qrbox: {
+                            width: 250,
+                            height: 250
+                        },
+                        verbose: true
+                    }
+                );
+
+                html5QrcodeScanner.render(onScanSuccess, onScanError);
+
+                // Vincular eventos de checkboxes cuando la página esté lista
+                bindCheckboxEvents();
+            });
+        </script>
+    @endpush
 
 
 </x-app-layout>
